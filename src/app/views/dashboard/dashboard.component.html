@@ -1,0 +1,237 @@
+<div class="dashboard-container">
+  <!-- Top Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="dashboard-title-group">
+      <h1>
+        <span>🚀</span> Workspace Executive Overview
+      </h1>
+      <p>Real-time telemetry, sprint velocity metrics, and active engineering tasks across your team.</p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/create-task" class="btn btn-primary" id="btn-dashboard-new-task">
+        <span>➕</span> Create Task
+      </a>
+      <a routerLink="/tasks" class="btn btn-secondary" id="btn-dashboard-view-board">
+        <span>📋</span> Kanban Board
+      </a>
+    </div>
+  </div>
+
+  <!-- Key Performance Indicator Cards with Directive [appHoverElevate] -->
+  <div class="kpi-grid">
+    <div class="kpi-card glass-card" appHoverElevate routerLink="/tasks" id="kpi-total-tasks">
+      <div class="kpi-header">
+        <span class="kpi-label">Total Work Items</span>
+        <div class="kpi-icon">📋</div>
+      </div>
+      <div class="kpi-value">{{ metrics.totalTasks }}</div>
+      <div class="kpi-footer">
+        <span class="trend-badge">Active</span> across {{ metrics.totalTeamMembers }} engineers
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" appHoverElevate routerLink="/tasks" id="kpi-in-progress">
+      <div class="kpi-header">
+        <span class="kpi-label">In Execution</span>
+        <div class="kpi-icon" style="color: var(--color-info);">⚡</div>
+      </div>
+      <div class="kpi-value" style="color: var(--color-info);">{{ metrics.inProgressTasks }}</div>
+      <div class="kpi-footer">
+        Active sprint development
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" appHoverElevate routerLink="/tasks" id="kpi-in-review">
+      <div class="kpi-header">
+        <span class="kpi-label">Pending Review</span>
+        <div class="kpi-icon" style="color: var(--color-warning);">🔍</div>
+      </div>
+      <div class="kpi-value" style="color: var(--color-warning);">{{ metrics.inReviewTasks }}</div>
+      <div class="kpi-footer">
+        PRs and verification gates
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" appHoverElevate routerLink="/tasks" id="kpi-completed">
+      <div class="kpi-header">
+        <span class="kpi-label">Completed</span>
+        <div class="kpi-icon" style="color: var(--color-success);">✅</div>
+      </div>
+      <div class="kpi-value" style="color: var(--color-success);">{{ metrics.completedTasks }}</div>
+      <div class="kpi-footer">
+        <span class="trend-badge">{{ metrics.completionRate | number:'1.0-0' }}%</span> sprint completion
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" appHoverElevate routerLink="/tasks" id="kpi-urgent" [appPulseStatus]="metrics.urgentTasks > 0 ? 'Critical' : ''">
+      <div class="kpi-header">
+        <span class="kpi-label">Urgent / Critical</span>
+        <div class="kpi-icon" style="color: var(--color-danger);">🔥</div>
+      </div>
+      <div class="kpi-value" style="color: var(--color-danger);">{{ metrics.urgentTasks }}</div>
+      <div class="kpi-footer">
+        Requires immediate attention
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid: Sprint Velocity & Category Breakdown on Left, Feed on Right -->
+  <div class="dashboard-main-grid">
+    <!-- Left Column -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+      <!-- Sprint Velocity Hero Section -->
+      <div class="section-card glass-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🎯</span> Sprint Health & Velocity
+          </div>
+          <span class="badge badge-medium">Sprint 42</span>
+        </div>
+
+        <div class="sprint-hero">
+          <div class="circular-gauge">
+            <svg class="gauge-svg" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#6366f1" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+              <circle class="gauge-bg" cx="50" cy="50" r="42" />
+              <circle 
+                class="gauge-fill" 
+                cx="50" 
+                cy="50" 
+                r="42"
+                stroke-dasharray="264"
+                [style.strokeDashoffset]="gaugeDashoffset" />
+            </svg>
+            <span class="gauge-text">{{ metrics.completionRate | number:'1.0-0' }}%</span>
+          </div>
+
+          <div class="sprint-hero-info">
+            <h3>Sprint 42 Target Velocity</h3>
+            <p>
+              Your agile team has delivered <strong>{{ metrics.completedTasks }} of {{ metrics.totalTasks }}</strong> targeted user stories with <strong>{{ metrics.totalEstimatedHours }} estimated engineering hours</strong> allocated.
+            </p>
+            <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+              <span class="badge badge-low">⚡ High Momentum</span>
+              <span class="badge badge-medium">🛡️ Zero Blocker Outages</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Workload Breakdown with ngStyle and @for -->
+        <div>
+          <div class="section-title" style="margin-bottom: var(--space-md); font-size: 1rem;">
+            <span>📊</span> Functional Category Distribution
+          </div>
+
+          <div class="category-bars">
+            @for (cat of categoryStats; track cat.name) {
+              <div class="category-row">
+                <div class="category-row-meta">
+                  <span style="color: var(--text-main);">{{ cat.name }}</span>
+                  <span style="color: var(--text-dim);">
+                    {{ cat.count }} tasks ({{ cat.percentage | number:'1.0-0' }}%)
+                  </span>
+                </div>
+                <div class="bar-track">
+                  <div 
+                    class="bar-fill" 
+                    [style.width.%]="cat.percentage"
+                    [style.backgroundColor]="cat.color">
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Deadlines -->
+      <div class="section-card glass-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>📅</span> Critical Upcoming Milestones
+          </div>
+          <a routerLink="/tasks" class="btn btn-ghost btn-sm">View All Tasks →</a>
+        </div>
+
+        <div class="upcoming-tasks">
+          @for (task of upcomingTasks; track task.id) {
+            <div 
+              class="upcoming-task-item" 
+              appHoverElevate 
+              (click)="openTaskModal(task)">
+              <div class="task-item-left">
+                <img [src]="task.assignee.avatar" [alt]="task.assignee.name" class="avatar-mini">
+                <div>
+                  <div class="task-item-title">{{ task.title }}</div>
+                  <div class="task-item-due">
+                    Due {{ task.dueDate | date:'mediumDate' }} • Assigned to {{ task.assignee.name }}
+                  </div>
+                </div>
+              </div>
+
+              <span class="badge" [ngClass]="task.priority | priorityBadge">
+                {{ task.priority }}
+              </span>
+            </div>
+          } @empty {
+            <p style="text-align: center; padding: 1.5rem 0;">No pending deadlines.</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Real-time Activity Feed -->
+    <div class="section-card glass-card" style="height: fit-content;">
+      <div class="section-header">
+        <div class="section-title">
+          <span>⚡</span> Live Activity Stream
+        </div>
+        <span class="badge badge-low">Live Sync</span>
+      </div>
+
+      <ul class="activity-stream">
+        @for (log of activityLogs; track log.id) {
+          <li class="activity-node">
+            <div class="node-icon-wrapper">
+              @switch (log.type) {
+                @case ('create') { ➕ }
+                @case ('status-change') { 🔄 }
+                @case ('delete') { 🗑️ }
+                @default { 📝 }
+              }
+            </div>
+            <div class="node-details">
+              <span class="node-text">
+                <strong>{{ log.user }}</strong> {{ log.action }} <em>"{{ log.taskTitle }}"</em>
+              </span>
+              <span class="node-time">{{ log.timestamp | timeAgo }}</span>
+            </div>
+          </li>
+        } @empty {
+          <p style="color: var(--text-dim); text-align: center; padding: 1.5rem 0;">No recorded activities.</p>
+        }
+      </ul>
+
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: var(--space-md); margin-top: auto;">
+        <a routerLink="/create-task" class="btn btn-secondary btn-sm" style="width: 100%;">
+          ➕ Log New Work Item
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Detail Modal Dialog -->
+  <app-task-modal
+    [task]="selectedTask"
+    (close)="selectedTask = null"
+    (statusChange)="onStatusChange($event)"
+    (progressChange)="onProgressChange($event)"
+    (delete)="onDeleteTask($event)">
+  </app-task-modal>
+</div>

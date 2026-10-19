@@ -1,0 +1,106 @@
+@if (task) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-dialog">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-badges">
+            <span class="task-id-badge">{{ task.id }}</span>
+            <span class="badge" [ngClass]="task.priority | priorityBadge" [appPulseStatus]="task.priority">
+              {{ task.priority }} Priority
+            </span>
+            <span class="badge badge-category">{{ task.category }}</span>
+          </div>
+          <h3>{{ task.title }}</h3>
+        </div>
+
+        <button class="modal-close-btn" (click)="close.emit()" aria-label="Close dialog">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div>
+          <span class="meta-label">Task Description</span>
+          <p class="modal-description">{{ task.description }}</p>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">Assigned Specialist</span>
+            <div class="meta-value">
+              <img [src]="task.assignee.avatar" [alt]="task.assignee.name" style="width: 24px; height: 24px; border-radius: 50%;">
+              <span>{{ task.assignee.name }}</span>
+            </div>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">Target Completion</span>
+            <span class="meta-value">📅 {{ task.dueDate | date:'mediumDate' }}</span>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">Current Phase</span>
+            <span class="meta-value" style="text-transform: capitalize;">{{ task.status }}</span>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">Estimated Effort</span>
+            <span class="meta-value">⏱️ {{ task.estimatedHours }} hours</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Progress Slider with Two-way Data Binding -->
+        <div class="progress-control">
+          <div class="progress-header">
+            <span>Execution Progress</span>
+            <strong style="color: var(--color-primary-light);">{{ task.progressPercentage }}%</strong>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            [(ngModel)]="task.progressPercentage"
+            (change)="onProgressChange()"
+            class="progress-slider">
+        </div>
+
+        <!-- Tags List with Structural Directive @for -->
+        @if (task.tags && task.tags.length > 0) {
+          <div>
+            <span class="meta-label" style="display: block; margin-bottom: 0.4rem;">Associated Tags</span>
+            <div class="tags-list">
+              @for (tag of task.tags; track tag) {
+                <span class="tag-pill">#{{ tag }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Modal Footer with Action Buttons -->
+      <div class="modal-footer">
+        <button class="btn btn-danger btn-sm" (click)="onDeleteTask()">
+          🗑️ Delete Task
+        </button>
+
+        <div class="status-actions">
+          @if (task.status !== 'in-progress') {
+            <button class="btn btn-secondary btn-sm" (click)="onUpdateStatus('in-progress')">
+              ▶ In Progress
+            </button>
+          }
+          @if (task.status !== 'in-review') {
+            <button class="btn btn-secondary btn-sm" (click)="onUpdateStatus('in-review')">
+              🔍 Submit Review
+            </button>
+          }
+          @if (task.status !== 'completed') {
+            <button class="btn btn-primary btn-sm" (click)="onUpdateStatus('completed')">
+              ✓ Mark Complete
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

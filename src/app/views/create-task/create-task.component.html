@@ -1,0 +1,302 @@
+<div class="create-task-container">
+  <!-- Header -->
+  <div class="create-header">
+    <div>
+      <h1>
+        <span>➕</span> Create New Work Item
+      </h1>
+      <p>Configure task metadata, assign engineering resources, and set target milestones with reactive form validation.</p>
+    </div>
+
+    <div style="display: flex; gap: var(--space-sm);">
+      <button class="btn btn-secondary" (click)="loadSampleTemplate()" id="btn-load-template">
+        ⚡ Fill Sample Data
+      </button>
+      <a routerLink="/tasks" class="btn btn-ghost">
+        ← Back to Board
+      </a>
+    </div>
+  </div>
+
+  <div class="form-layout-grid">
+    <!-- Main Reactive Form Card -->
+    <div class="form-card glass-card">
+      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" id="form-create-task">
+        
+        <!-- Task Title -->
+        <div class="form-group">
+          <label class="form-label" for="task-title">
+            <span>Work Item Title <span class="required-star">*</span></span>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Min 5 chars</span>
+          </label>
+          <input 
+            type="text" 
+            id="task-title"
+            formControlName="title"
+            class="form-input" 
+            [class.is-invalid]="isFieldInvalid('title')"
+            placeholder="e.g. Implement OAuth 2.0 PKCE authentication flow">
+          
+          @if (isFieldInvalid('title')) {
+            <div class="form-error-msg">
+              <span>⚠️</span> Title is required (minimum 5 characters).
+            </div>
+          }
+        </div>
+
+        <!-- Category & Priority Row -->
+        <div class="form-row-2">
+          <!-- Category -->
+          <div class="form-group">
+            <label class="form-label" for="task-category">
+              <span>Domain Category <span class="required-star">*</span></span>
+            </label>
+            <select 
+              id="task-category"
+              formControlName="category"
+              class="form-select"
+              [class.is-invalid]="isFieldInvalid('category')">
+              <option value="" disabled>Select domain category</option>
+              <option value="Frontend">Frontend Architecture</option>
+              <option value="Backend">Backend Services</option>
+              <option value="DevOps">Cloud & DevOps</option>
+              <option value="UI/UX">UI/UX Product Design</option>
+              <option value="QA">Quality Assurance</option>
+              <option value="Docs">Technical Documentation</option>
+            </select>
+            @if (isFieldInvalid('category')) {
+              <div class="form-error-msg">Please select a domain category.</div>
+            }
+          </div>
+
+          <!-- Priority -->
+          <div class="form-group">
+            <label class="form-label" for="task-priority">
+              <span>Severity Priority <span class="required-star">*</span></span>
+            </label>
+            <select 
+              id="task-priority"
+              formControlName="priority"
+              class="form-select"
+              [class.is-invalid]="isFieldInvalid('priority')">
+              <option value="Low">🌱 Low - Minor enhancement</option>
+              <option value="Medium">⚡ Medium - Standard feature</option>
+              <option value="High">⚠️ High - Time-sensitive</option>
+              <option value="Critical">🔥 Critical - Sprint blocker</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Initial Status & Assignee Row -->
+        <div class="form-row-2">
+          <!-- Initial Status -->
+          <div class="form-group">
+            <label class="form-label" for="task-status">
+              <span>Workflow Stage <span class="required-star">*</span></span>
+            </label>
+            <select 
+              id="task-status"
+              formControlName="status"
+              class="form-select">
+              <option value="backlog">Backlog</option>
+              <option value="in-progress">In Progress</option>
+              <option value="in-review">In Review</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          <!-- Assignee -->
+          <div class="form-group">
+            <label class="form-label" for="task-assignee">
+              <span>Assigned Engineer <span class="required-star">*</span></span>
+            </label>
+            <select 
+              id="task-assignee"
+              formControlName="assigneeId"
+              class="form-select"
+              [class.is-invalid]="isFieldInvalid('assigneeId')">
+              <option value="" disabled>Select engineer</option>
+              @for (member of teamMembers; track member.id) {
+                <option [value]="member.id">
+                  {{ member.name }} ({{ member.role }})
+                </option>
+              }
+            </select>
+            @if (isFieldInvalid('assigneeId')) {
+              <div class="form-error-msg">Please assign an engineer.</div>
+            }
+          </div>
+        </div>
+
+        <!-- Due Date & Estimated Hours -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="task-duedate">
+              <span>Target Delivery Date <span class="required-star">*</span></span>
+            </label>
+            <input 
+              type="date" 
+              id="task-duedate"
+              formControlName="dueDate"
+              class="form-input"
+              [class.is-invalid]="isFieldInvalid('dueDate')">
+            @if (isFieldInvalid('dueDate')) {
+              <div class="form-error-msg">Target delivery date is required.</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-hours">
+              <span>Estimated Hours <span class="required-star">*</span></span>
+            </label>
+            <input 
+              type="number" 
+              step="0.5" 
+              min="0.5" 
+              max="200"
+              id="task-hours"
+              formControlName="estimatedHours"
+              class="form-input"
+              [class.is-invalid]="isFieldInvalid('estimatedHours')">
+            @if (isFieldInvalid('estimatedHours')) {
+              <div class="form-error-msg">Enter effort between 0.5 and 200 hours.</div>
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="task-desc">
+            <span>Detailed Description <span class="required-star">*</span></span>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Min 10 chars</span>
+          </label>
+          <textarea 
+            id="task-desc"
+            rows="4" 
+            formControlName="description"
+            class="form-textarea"
+            [class.is-invalid]="isFieldInvalid('description')"
+            placeholder="Document acceptance criteria, architectural scope, and technical context..."></textarea>
+          @if (isFieldInvalid('description')) {
+            <div class="form-error-msg">Description is required (minimum 10 characters).</div>
+          }
+        </div>
+
+        <!-- Interactive Tag Chips Builder -->
+        <div class="form-group">
+          <label class="form-label">Technology & Topic Tags</label>
+          <div class="tags-input-wrapper">
+            <input 
+              type="text" 
+              class="form-input" 
+              placeholder="e.g. Angular, NgRx, REST, Docker"
+              [(ngModel)]="newTagInput"
+              [ngModelOptions]="{standalone: true}"
+              (keydown.enter)="addTag($event)"
+              id="input-tag-chip">
+            <button type="button" class="btn btn-secondary" (click)="addTag($event)">
+              Add Tag
+            </button>
+          </div>
+
+          <div class="tag-chips-container">
+            @for (tag of currentTags; track tag) {
+              <span class="tag-chip">
+                #{{ tag }}
+                <button type="button" class="tag-remove-btn" (click)="removeTag(tag)" aria-label="Remove tag">×</button>
+              </span>
+            } @empty {
+              <span style="font-size: 0.75rem; color: var(--text-dim);">No tags added yet. Type above and press enter.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Urgent Flag Checkbox -->
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              formControlName="isUrgent"
+              class="custom-checkbox"
+              id="check-urgent">
+            <span>🔥 Mark as high-priority critical sprint item</span>
+          </label>
+        </div>
+
+        <!-- Form Actions with Property Binding [disabled]="taskForm.invalid" -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" (click)="onReset()">
+            Clear Form
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-lg" 
+            [disabled]="taskForm.invalid"
+            id="btn-submit-task">
+            <span>🚀</span> Create Work Item
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Preview Card Panel (Demonstrates real-time reactive data binding!) -->
+    <div class="preview-panel">
+      <div class="preview-card-header">
+        <h3 style="font-size: 1rem;">Live Card Preview</h3>
+        <span class="preview-pill">Real-time binding</span>
+      </div>
+
+      <div class="glass-card" style="padding: var(--space-lg); display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: var(--font-family-mono); font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">
+            TSK-NEW
+          </span>
+          <div style="display: flex; gap: 0.35rem;">
+            <span class="badge" [ngClass]="(taskForm.get('priority')?.value || 'Medium') | priorityBadge">
+              {{ taskForm.get('priority')?.value || 'Medium' }}
+            </span>
+            <span class="badge badge-category">
+              {{ taskForm.get('category')?.value || 'Domain' }}
+            </span>
+          </div>
+        </div>
+
+        <h4 style="font-size: 1rem; color: var(--text-main);">
+          {{ taskForm.get('title')?.value || 'Your Work Item Title' }}
+        </h4>
+
+        <p style="font-size: 0.825rem; color: var(--text-muted); line-height: 1.4;">
+          {{ (taskForm.get('description')?.value || 'Enter a description to see a live preview of how this task card will appear across the Kanban board...') | slice:0:120 }}...
+        </p>
+
+        @if (currentTags.length > 0) {
+          <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            @for (t of currentTags; track t) {
+              <span class="tag-chip" style="font-size: 0.7rem;">#{{ t }}</span>
+            }
+          </div>
+        }
+
+        <div style="height: 5px; background: var(--bg-card-subtle); border-radius: 3px; overflow: hidden; margin-top: 0.5rem;">
+          <div style="width: 15%; height: 100%; background: linear-gradient(90deg, #6366f1, #06b6d4);"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <img 
+              [src]="getSelectedAssignee()?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'" 
+              alt="Assignee" 
+              style="width: 24px; height: 24px; border-radius: 50%;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
+              {{ getSelectedAssignee()?.name || 'Unassigned' }}
+            </span>
+          </div>
+
+          <span style="font-size: 0.75rem; color: var(--text-dim);">
+            Due {{ (taskForm.get('dueDate')?.value | date:'mediumDate') || 'TBD' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

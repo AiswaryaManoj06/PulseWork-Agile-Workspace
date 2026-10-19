@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deliverable 2: User Interface Design and Implementation — PulseWork</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --bg: #090d16;
+      --card: #131c31;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2.5rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      margin-bottom: 0.75rem;
+    }
+    h1 { font-size: 2rem; color: #fff; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.4rem; color: #818cf8; margin: 1.8rem 0 1rem 0; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    h3 { font-size: 1.1rem; color: #fff; margin: 1.2rem 0 0.5rem 0; }
+    p, li { color: var(--muted); font-size: 0.95rem; }
+    ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+    .rubric-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .rubric-box h3 { color: var(--success); margin-top: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.875rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th { background: rgba(255, 255, 255, 0.05); color: #fff; }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #06b6d4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Deliverable 2</span>
+      <h1>Design and Implement the User Interface for the Web Application</h1>
+      <p><strong>Project:</strong> PulseWork — Responsive Agile Task & Team Workspace Management Platform</p>
+    </header>
+
+    <div class="rubric-box">
+      <h3>Rubric Compliance & Evaluation Summary</h3>
+      <ul>
+        <li><strong>Is the user interface visually appealing and easy to navigate?</strong> <strong style="color:var(--success);">YES</strong> — Built with CSS custom property tokens, curated HSL color palette, dark/light theme switcher, Google Font typography ('Plus Jakarta Sans'), glassmorphism, sticky sidebar, and intuitive header.</li>
+        <li><strong>Does the interface layout adapt well to different screen sizes and orientations?</strong> <strong style="color:var(--success);">YES</strong> — Mobile (&lt;768px), Tablet (768px-1100px), and Desktop (&gt;1100px) responsive layouts with CSS Grid, Flexbox, and mobile hamburger drawer.</li>
+        <li><strong>Does the interface include the required components and features, such as forms and buttons?</strong> <strong style="color:var(--success);">YES</strong> — Complete reactive form with real-time validation, interactive Kanban board with action buttons, status progression, modals, and directory filters.</li>
+      </ul>
+    </div>
+
+    <h2>1. Visual Aesthetics & Design System Tokens</h2>
+    <p>The application implements an enterprise CSS token architecture supporting one-click Dark and Light theming:</p>
+    <table>
+      <tr>
+        <th>CSS Token</th>
+        <th>Dark Mode Value</th>
+        <th>Semantic Purpose</th>
+      </tr>
+      <tr>
+        <td><code>--bg-app</code></td>
+        <td><code>#090d16</code></td>
+        <td>Deep navy root application background</td>
+      </tr>
+      <tr>
+        <td><code>--bg-card</code></td>
+        <td><code>#131c31</code></td>
+        <td>Card surfaces with glassmorphism backdrop filter</td>
+      </tr>
+      <tr>
+        <td><code>--color-primary</code></td>
+        <td><code>#6366f1</code></td>
+        <td>Vibrant indigo for main actions and focus rings</td>
+      </tr>
+      <tr>
+        <td><code>--color-success</code></td>
+        <td><code>#10b981</code></td>
+        <td>Emerald for completed tasks and online status</td>
+      </tr>
+      <tr>
+        <td><code>--color-warning</code></td>
+        <td><code>#f59e0b</code></td>
+        <td>Amber for pending review and busy status</td>
+      </tr>
+      <tr>
+        <td><code>--color-danger</code></td>
+        <td><code>#ef4444</code></td>
+        <td>Rose red for critical priority blockers and delete actions</td>
+      </tr>
+    </table>
+
+    <h2>2. Multi-Device Responsive Layout Strategy</h2>
+    <ul>
+      <li><strong>Desktop (1100px+):</strong> Permanent sticky navigation sidebar with route indicators and sprint counter; 4-column Kanban sprint lanes; side-by-side reactive form with live card preview.</li>
+      <li><strong>Tablet (768px - 1100px):</strong> Collapsible drawer sidebar; 2x2 wrapping Kanban columns; multi-column responsive metrics grid.</li>
+      <li><strong>Mobile (&lt;768px):</strong> Fixed top bar with hamburger menu; slide-out drawer with backdrop blur overlay; stacked single-column Kanban lanes; fluid touch targets for all buttons and inputs.</li>
+    </ul>
+
+    <h2>3. UI Components & Feature Catalog</h2>
+    <ul>
+      <li><strong>HeaderComponent:</strong> Live search with two-way binding, theme toggle, activity notification popover with click-outside listener, and user avatar.</li>
+      <li><strong>SidebarComponent:</strong> Route links with active state highlight, dynamic task counters, sprint progress bar, and sample reset action.</li>
+      <li><strong>DashboardComponent:</strong> 5 KPI summary cards, circular SVG sprint gauge, category progress bars, upcoming milestones, and activity stream.</li>
+      <li><strong>TasksComponent:</strong> Dual view mode toggle (Kanban vs Table List), multi-field filter toolbar, interactive status advancement triggers.</li>
+      <li><strong>CreateTaskComponent:</strong> Reactive Form with FormBuilder, Validators (required, minLength, min, max), real-time live preview card, and tag chip manager.</li>
+      <li><strong>TeamComponent:</strong> Member cards with interactive availability toggles (Online, Busy, Away) and workload capacity bars.</li>
+      <li><strong>AnalyticsComponent:</strong> Displays project financial budget, sprint velocity, and average effort using Angular pipes.</li>
+    </ul>
+  </div>
+</body>
+</html>

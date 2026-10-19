@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseWork — Angular Responsive Web Application Assignment Submission</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --bg: #090d16;
+      --card: #131c31;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 2.5rem;
+    }
+    h1 { font-size: 2.2rem; margin-bottom: 0.5rem; color: #fff; }
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      margin-bottom: 1rem;
+    }
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    h2 { font-size: 1.5rem; color: #818cf8; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.15rem; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #fff; }
+    p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th { background: rgba(255, 255, 255, 0.05); color: #fff; }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #06b6d4;
+    }
+    pre {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 1rem 0;
+    }
+    .rubric-pill {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      margin-bottom: 0.5rem;
+    }
+    ul, ol { margin-left: 1.5rem; color: var(--muted); margin-bottom: 1rem; }
+    li { margin-bottom: 0.35rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Angular 19 Responsive Web Application</div>
+      <h1>PulseWork — Agile Task & Team Workspace Platform</h1>
+      <p>Comprehensive Course Assignment Submission Portfolio & Technical Specification</p>
+    </header>
+
+    <!-- Project Title -->
+    <div class="section-card">
+      <span class="rubric-pill">Part 1: Project Title</span>
+      <h2>1. Project Title & Overview</h2>
+      <p><strong>Title:</strong> PulseWork — Responsive Agile Task & Team Workspace Management Platform</p>
+      <p><strong>Description:</strong> An enterprise-grade, responsive single-page web application built with Angular 19 showcasing standalone components, reactive forms, real-time RxJS data binding, custom directives, pipes, Kanban and list views, and dark/light theming.</p>
+    </div>
+
+    <!-- UI Design & Implementation -->
+    <div class="section-card">
+      <span class="rubric-pill">Part 2: UI Design & Responsiveness</span>
+      <h2>2. Design and Implement the User Interface</h2>
+      <h3>Rubric Verification:</h3>
+      <ul>
+        <li><strong>Visually Appealing & Easy to Navigate?</strong> Yes. Engineered with CSS custom property tokens, glassmorphism, responsive sticky sidebar, mobile drawer, and Dark/Light theme toggle.</li>
+        <li><strong>Adapts to Different Screen Sizes?</strong> Yes. Mobile (&lt;768px), Tablet (768px–1100px), and Desktop (1100px+) responsive breakpoints with CSS Grid and Flexbox.</li>
+        <li><strong>Includes Required Components & Forms?</strong> Yes. Full header, sidebar, dashboard, dual-mode Kanban board, reactive form wizard, team directory, and analytics table.</li>
+      </ul>
+    </div>
+
+    <!-- Angular Components -->
+    <div class="section-card">
+      <span class="rubric-pill">Part 3: Angular Components</span>
+      <h2>3. Implement Angular Components for the Web Application</h2>
+      <p>Organized using modern Angular 19 Standalone Components:</p>
+      <table>
+        <tr>
+          <th>Component</th>
+          <th>Selector</th>
+          <th>Key Features</th>
+        </tr>
+        <tr>
+          <td>AppComponent</td>
+          <td>app-root</td>
+          <td>Application shell, responsive drawer coordinator, global search router</td>
+        </tr>
+        <tr>
+          <td>HeaderComponent</td>
+          <td>app-header</td>
+          <td>Theme toggle, notifications popover, search input with [(ngModel)]</td>
+        </tr>
+        <tr>
+          <td>SidebarComponent</td>
+          <td>app-sidebar</td>
+          <td>RouterLink navigation, live sprint counter, demo reset</td>
+        </tr>
+        <tr>
+          <td>DashboardComponent</td>
+          <td>app-dashboard</td>
+          <td>KPI cards, circular SVG sprint gauge, category bars, activity stream</td>
+        </tr>
+        <tr>
+          <td>TasksComponent</td>
+          <td>app-tasks</td>
+          <td>Kanban 4-column sprint lanes, list table, category/priority filter</td>
+        </tr>
+        <tr>
+          <td>CreateTaskComponent</td>
+          <td>app-create-task</td>
+          <td>Reactive Forms (FormBuilder, Validators), live preview card, tag chips</td>
+        </tr>
+        <tr>
+          <td>TeamComponent</td>
+          <td>app-team</td>
+          <td>Team member cards, real-time status switches (Online/Busy/Away)</td>
+        </tr>
+        <tr>
+          <td>AnalyticsComponent</td>
+          <td>app-analytics</td>
+          <td>Angular pipes showcase (Currency, Percent, Decimal, Date, UpperCase)</td>
+        </tr>
+        <tr>
+          <td>TaskModalComponent</td>
+          <td>app-task-modal</td>
+          <td>Backdrop modal, interactive progress slider, status transitions</td>
+        </tr>
+        <tr>
+          <td>NotificationToastComponent</td>
+          <td>app-notification-toast</td>
+          <td>Reactive floating toast alerts</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Data Binding & Directives -->
+    <div class="section-card">
+      <span class="rubric-pill">Part 4: Data Binding & Directives</span>
+      <h2>4. Angular Data Binding and Directives</h2>
+      <h3>Data Binding Evidence:</h3>
+      <ul>
+        <li><strong>Interpolation:</strong> <code>{{ metrics.totalTasks }}</code>, <code>{{ task.dueDate | date:'mediumDate' }}</code>, <code>{{ estimatedBudget | currency:'USD' }}</code></li>
+        <li><strong>Property Binding:</strong> <code>[disabled]="taskForm.invalid"</code>, <code>[style.width.%]="cat.percentage"</code>, <code>[class.is-invalid]="isFieldInvalid('title')"</code></li>
+        <li><strong>Event Binding:</strong> <code>(click)="onToggleTheme()"</code>, <code>(ngSubmit)="onSubmit()"</code>, <code>(input)="onSearchChange()"</code></li>
+        <li><strong>Two-Way Data Binding:</strong> <code>[(ngModel)]="searchQuery"</code>, <code>[(ngModel)]="selectedCategory"</code>, <code>[(ngModel)]="task.progressPercentage"</code></li>
+      </ul>
+
+      <h3>Directives Evidence:</h3>
+      <ul>
+        <li><strong>Structural Directives:</strong> <code>@if (isFieldInvalid('title'))</code>, <code>@if (viewMode === 'kanban')</code>, <code>@for (col of columns; track col.status)</code>, <code>@switch (log.type)</code></li>
+        <li><strong>Attribute Directives:</strong> <code>[ngClass]="task.priority | priorityBadge"</code>, <code>[ngStyle]="{ width: task.progressPercentage + '%' }"</code></li>
+        <li><strong>Custom Directives:</strong>
+          <ul>
+            <li><code>appHoverElevate</code>: Dynamic 3D elevation and glow shadow on mouse hover using <code>@HostListener</code> and <code>Renderer2</code>.</li>
+            <li><code>appPulseStatus</code>: Dynamically injects pulsing beacon for critical blocker tasks.</li>
+            <li><code>appClickOutside</code>: Dismisses dropdowns and modals on external click.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

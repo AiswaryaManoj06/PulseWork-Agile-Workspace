@@ -1,0 +1,16 @@
+<div class="toast-container">
+  @for (toast of toasts; track toast.id) {
+    <div class="toast-item" [ngClass]="'toast-' + toast.type">
+      <span>
+        @switch (toast.type) {
+          @case ('success') { ✅ }
+          @case ('warning') { ⚠️ }
+          @case ('danger') { ❌ }
+          @default { ℹ️ }
+        }
+        {{ toast.message }}
+      </span>
+      <button class="toast-close-btn" (click)="dismiss(toast.id)" aria-label="Dismiss notification">✕</button>
+    </div>
+  }
+</div>

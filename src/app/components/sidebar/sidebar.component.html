@@ -1,0 +1,91 @@
+<!-- Backdrop overlay on mobile -->
+@if (isOpen) {
+  <div class="mobile-overlay" (click)="close.emit()"></div>
+}
+
+<aside class="app-sidebar" [class.mobile-open]="isOpen">
+  <div class="sidebar-header">
+    <a routerLink="/dashboard" class="brand-wrapper" (click)="onNavClick()">
+      <div class="brand-icon">⚡</div>
+      <span class="brand-title">PulseWork</span>
+    </a>
+    <button class="close-sidebar-btn" (click)="close.emit()" aria-label="Close sidebar">✕</button>
+  </div>
+
+  <div class="sidebar-content">
+    <!-- Main Views -->
+    <div class="nav-section">
+      <span class="nav-section-title">Workspace Views</span>
+
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" (click)="onNavClick()" id="nav-link-dashboard">
+        <div class="nav-item-left">
+          <span class="nav-item-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+      </a>
+
+      <a routerLink="/tasks" routerLinkActive="active" class="nav-item" (click)="onNavClick()" id="nav-link-tasks">
+        <div class="nav-item-left">
+          <span class="nav-item-icon">📋</span>
+          <span>Task Board</span>
+        </div>
+        <span class="nav-badge">{{ totalTasks }}</span>
+      </a>
+
+      <a routerLink="/create-task" routerLinkActive="active" class="nav-item" (click)="onNavClick()" id="nav-link-create">
+        <div class="nav-item-left">
+          <span class="nav-item-icon">➕</span>
+          <span>Create Task</span>
+        </div>
+        <span class="nav-badge" style="background: var(--color-primary-glow); color: var(--color-primary-light);">New</span>
+      </a>
+
+      <a routerLink="/team" routerLinkActive="active" class="nav-item" (click)="onNavClick()" id="nav-link-team">
+        <div class="nav-item-left">
+          <span class="nav-item-icon">👥</span>
+          <span>Team Directory</span>
+        </div>
+        <span class="nav-badge">{{ totalTeam }}</span>
+      </a>
+
+      <a routerLink="/analytics" routerLinkActive="active" class="nav-item" (click)="onNavClick()" id="nav-link-analytics">
+        <div class="nav-item-left">
+          <span class="nav-item-icon">📈</span>
+          <span>Analytics</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Quick Status Filters -->
+    <div class="nav-section">
+      <span class="nav-section-title">Sprint Status</span>
+      <div class="workspace-card">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.25rem;">
+          <span style="color: var(--text-muted)">Sprint Completion</span>
+          <strong style="color: var(--color-success)">{{ completionRate | number:'1.0-0' }}%</strong>
+        </div>
+        <div style="height: 6px; background: var(--bg-card); border-radius: 3px; overflow: hidden;">
+          <div [style.width.%]="completionRate" style="height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); transition: width 0.4s ease;"></div>
+        </div>
+        <span style="font-size: 0.7rem; color: var(--text-dim); margin-top: 0.35rem;">
+          {{ completedTasks }} of {{ totalTasks }} tasks finished
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="workspace-card">
+      <span class="workspace-label">Current Environment</span>
+      <span class="workspace-name">Agile Enterprise Sprint 42</span>
+    </div>
+
+    <button 
+      class="btn btn-secondary btn-sm" 
+      style="width: 100%; font-size: 0.775rem;"
+      (click)="resetData()"
+      title="Restore sample demo tasks">
+      🔄 Reset Demo Data
+    </button>
+  </div>
+</aside>

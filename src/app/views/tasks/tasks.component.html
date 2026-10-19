@@ -1,0 +1,256 @@
+<div class="tasks-container">
+  <!-- Tasks View Header -->
+  <div class="tasks-header">
+    <div class="tasks-title-group">
+      <h1>
+        <span>📋</span> Agile Task & Story Board
+      </h1>
+      <p>Organize, prioritize, and track workflow velocity across development cycles.</p>
+    </div>
+
+    <div style="display: flex; gap: var(--space-sm); align-items: center;">
+      <!-- View Mode Switcher -->
+      <div class="view-mode-toggle">
+        <button 
+          class="toggle-btn" 
+          [class.active]="viewMode === 'kanban'"
+          (click)="setViewMode('kanban')"
+          id="btn-view-kanban">
+          <span>⊞</span> Kanban Board
+        </button>
+        <button 
+          class="toggle-btn" 
+          [class.active]="viewMode === 'list'"
+          (click)="setViewMode('list')"
+          id="btn-view-list">
+          <span>☰</span> Table List
+        </button>
+      </div>
+
+      <a routerLink="/create-task" class="btn btn-primary" id="btn-tasks-create">
+        <span>➕</span> New Task
+      </a>
+    </div>
+  </div>
+
+  <!-- Dynamic Filter Controls Bar with Two-Way Data Binding [(ngModel)] -->
+  <div class="filter-bar glass-card">
+    <div class="filters-left">
+      <div class="search-box">
+        <span class="search-icon-inline">🔍</span>
+        <input 
+          type="text" 
+          class="form-input" 
+          placeholder="Filter by title, tag, or assignee..."
+          [(ngModel)]="searchQuery"
+          id="input-filter-search">
+      </div>
+
+      <!-- Category Filter -->
+      <select class="filter-select" [(ngModel)]="selectedCategory" id="select-filter-category">
+        <option value="All">All Categories ({{ allTasks.length }})</option>
+        <option value="Frontend">Frontend</option>
+        <option value="Backend">Backend</option>
+        <option value="DevOps">DevOps</option>
+        <option value="UI/UX">UI/UX</option>
+        <option value="QA">Quality Assurance</option>
+        <option value="Docs">Documentation</option>
+      </select>
+
+      <!-- Priority Filter -->
+      <select class="filter-select" [(ngModel)]="selectedPriority" id="select-filter-priority">
+        <option value="All">All Priorities</option>
+        <option value="Critical">🔥 Critical Priority</option>
+        <option value="High">⚠️ High Priority</option>
+        <option value="Medium">⚡ Medium Priority</option>
+        <option value="Low">🌱 Low Priority</option>
+      </select>
+
+      @if (searchQuery || selectedCategory !== 'All' || selectedPriority !== 'All') {
+        <button class="btn btn-ghost btn-sm" (click)="resetFilters()" id="btn-reset-filters">
+          ✕ Reset Filters
+        </button>
+      }
+    </div>
+
+    <div style="font-size: 0.825rem; color: var(--text-muted);">
+      Showing <strong>{{ filteredTasks.length }}</strong> of {{ allTasks.length }} items
+    </div>
+  </div>
+
+  <!-- KANBAN VIEW (Structural Directive @if) -->
+  @if (viewMode === 'kanban') {
+    <div class="kanban-board">
+      @for (col of columns; track col.status) {
+        <div class="kanban-column">
+          <!-- Column Header with Column Counter -->
+          <div class="column-header">
+            <div class="column-title">
+              <span class="column-dot" [style.backgroundColor]="col.color"></span>
+              <span>{{ col.title }}</span>
+            </div>
+            <span class="column-count">{{ getTasksForColumn(col.status).length }}</span>
+          </div>
+
+          <!-- Cards List with Directive @for and custom [appHoverElevate] -->
+          <div class="column-cards">
+            @for (task of getTasksForColumn(col.status); track task.id) {
+              <div 
+                class="task-card" 
+                appHoverElevate 
+                [appPulseStatus]="task.priority"
+                (click)="openModal(task)"
+                [attr.id]="'task-card-' + task.id">
+                
+                <!-- Card Header -->
+                <div class="task-card-header">
+                  <span class="task-code">{{ task.id }}</span>
+                  <div style="display: flex; gap: 0.35rem;">
+                    <span class="badge" [ngClass]="task.priority | priorityBadge">
+                      {{ task.priority }}
+                    </span>
+                    <span class="badge badge-category">{{ task.category }}</span>
+                  </div>
+                </div>
+
+                <!-- Card Title & Truncated Description with slice pipe -->
+                <h4 class="task-card-title">{{ task.title }}</h4>
+                <p class="task-card-desc">{{ task.description | slice:0:80 }}...</p>
+
+                <!-- Tags array with @for -->
+                @if (task.tags && task.tags.length > 0) {
+                  <div class="task-card-tags">
+                    @for (tag of task.tags; track tag) {
+                      <span class="card-tag">#{{ tag }}</span>
+                    }
+                  </div>
+                }
+
+                <!-- Progress Bar with Dynamic Property Binding [style.width.%] -->
+                <div class="task-progress-bar">
+                  <div class="task-progress-fill" [style.width.%]="task.progressPercentage"></div>
+                </div>
+
+                <!-- Card Footer with Assignee, Due Date & Quick Move buttons -->
+                <div class="task-card-footer">
+                  <div class="assignee-info">
+                    <img [src]="task.assignee.avatar" [alt]="task.assignee.name" class="avatar-micro">
+                    <span class="assignee-name">{{ task.assignee.name }}</span>
+                  </div>
+
+                  <div class="card-actions-quick">
+                    @if (col.status !== 'backlog') {
+                      <button 
+                        class="quick-move-btn" 
+                        title="Move to previous status"
+                        (click)="quickMoveStatus(task, 'prev', $event)">
+                        ←
+                      </button>
+                    }
+                    @if (col.status !== 'completed') {
+                      <button 
+                        class="quick-move-btn" 
+                        title="Advance to next status"
+                        (click)="quickMoveStatus(task, 'next', $event)">
+                        →
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div style="text-align: center; color: var(--text-dim); padding: 2rem 0; font-size: 0.85rem;">
+                No tasks in this lane
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- TABULAR LIST VIEW (Structural Directive @if) -->
+  @if (viewMode === 'list') {
+    <div class="glass-card list-view-table-wrapper">
+      <table class="tasks-table">
+        <thead>
+          <tr>
+            <th>Task Code</th>
+            <th>Title & Category</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assignee</th>
+            <th>Target Due Date</th>
+            <th>Progress</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of filteredTasks; track task.id) {
+            <tr (click)="openModal(task)" style="cursor: pointer;">
+              <td style="font-family: var(--font-family-mono); font-weight: 700; color: var(--color-primary-light);">
+                {{ task.id }}
+              </td>
+              <td>
+                <div style="font-weight: 600; color: var(--text-main);">{{ task.title }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-dim);">{{ task.category }}</div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="task.priority | priorityBadge">
+                  {{ task.priority }}
+                </span>
+              </td>
+              <td>
+                <span class="badge badge-category" style="text-transform: capitalize;">
+                  {{ task.status }}
+                </span>
+              </td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <img [src]="task.assignee.avatar" [alt]="task.assignee.name" class="avatar-micro">
+                  <span>{{ task.assignee.name }}</span>
+                </div>
+              </td>
+              <td style="color: var(--text-muted); font-size: 0.85rem;">
+                {{ task.dueDate | date:'mediumDate' }}
+              </td>
+              <td style="width: 120px;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div class="task-progress-bar" style="flex: 1;">
+                    <div class="task-progress-fill" [style.width.%]="task.progressPercentage"></div>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-dim);">{{ task.progressPercentage }}%</span>
+                </div>
+              </td>
+              <td (click)="$event.stopPropagation()">
+                <button class="btn btn-secondary btn-sm" (click)="openModal(task)">
+                  Inspect
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <div class="empty-state-icon">🔍</div>
+                  <h3>No tasks match your search filters</h3>
+                  <p>Try resetting the category or priority filters to see all backlog items.</p>
+                  <button class="btn btn-secondary" (click)="resetFilters()">Reset All Filters</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Task Detail Modal Dialog -->
+  <app-task-modal
+    [task]="selectedTask"
+    (close)="selectedTask = null"
+    (statusChange)="onModalStatusChange($event)"
+    (progressChange)="onModalProgressChange($event)"
+    (delete)="onModalDelete($event)">
+  </app-task-modal>
+</div>

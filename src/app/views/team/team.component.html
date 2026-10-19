@@ -1,0 +1,102 @@
+<div class="team-container">
+  <div class="team-header">
+    <div>
+      <h1>
+        <span>👥</span> Engineering Team Directory
+      </h1>
+      <p>Resource bandwidth, current workload distributions, and live availability statuses.</p>
+    </div>
+
+    <div style="display: flex; gap: var(--space-sm); align-items: center;">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">
+        <strong>{{ teamMembers.length }}</strong> active engineers
+      </span>
+      <a routerLink="/create-task" class="btn btn-primary btn-sm">
+        <span>➕</span> Assign Work Item
+      </a>
+    </div>
+  </div>
+
+  <div class="team-grid">
+    @for (member of teamMembers; track member.id) {
+      <div class="member-card glass-card" appHoverElevate>
+        <div class="member-card-top">
+          <div class="member-avatar-container">
+            <img [src]="member.avatar" [alt]="member.name" class="member-avatar">
+            <span 
+              class="status-indicator-dot" 
+              [ngClass]="'status-' + member.status"
+              [title]="'Status: ' + member.status">
+            </span>
+          </div>
+
+          <div class="member-info">
+            <h3 class="member-name">{{ member.name }}</h3>
+            <span class="member-role">{{ member.role }}</span>
+            <span class="member-email">{{ member.email }}</span>
+          </div>
+        </div>
+
+        <!-- Interactive Availability Status Toggle with Event Binding -->
+        <div>
+          <span style="font-size: 0.725rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.35rem; display: block;">
+            Availability Status
+          </span>
+          <div class="status-switcher">
+            <button 
+              type="button" 
+              class="status-toggle-btn" 
+              [class.active]="member.status === 'online'"
+              (click)="updateStatus(member.id, 'online')">
+              🟢 Online
+            </button>
+            <button 
+              type="button" 
+              class="status-toggle-btn" 
+              [class.active]="member.status === 'busy'"
+              (click)="updateStatus(member.id, 'busy')">
+              🟡 Busy
+            </button>
+            <button 
+              type="button" 
+              class="status-toggle-btn" 
+              [class.active]="member.status === 'away'"
+              (click)="updateStatus(member.id, 'away')">
+              🟣 Away
+            </button>
+          </div>
+        </div>
+
+        <!-- Workload stats -->
+        <div class="workload-stats">
+          <div class="stat-item">
+            <span class="stat-number" style="color: var(--color-primary-light);">{{ member.activeTasksCount }}</span>
+            <span class="stat-label">Active Tasks</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" style="color: var(--color-success);">{{ member.completedTasksCount }}</span>
+            <span class="stat-label">Completed</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" style="color: var(--color-info);">
+              {{ (member.activeTasksCount * 25) > 100 ? 100 : (member.activeTasksCount * 25) }}%
+            </span>
+            <span class="stat-label">Workload Load</span>
+          </div>
+        </div>
+
+        <!-- Skills tags with @for -->
+        <div>
+          <span style="font-size: 0.725rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.35rem; display: block;">
+            Technical Competencies
+          </span>
+          <div class="skills-list">
+            @for (skill of member.skills; track skill) {
+              <span class="skill-tag">{{ skill }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

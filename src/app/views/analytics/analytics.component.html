@@ -1,0 +1,130 @@
+<div class="analytics-container">
+  <div class="analytics-header">
+    <div>
+      <h1>
+        <span>📈</span> Agile Performance & Resource Analytics
+      </h1>
+      <p>Demonstrating Angular pipes (Currency, Percent, Decimal, Date, UpperCase) and data manipulation.</p>
+    </div>
+
+    <div style="display: flex; gap: var(--space-sm);">
+      <button class="btn btn-secondary" (click)="exportReport()">
+        📥 Download Summary Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Overview Stat Metrics demonstrating Built-in Pipes -->
+  <div class="stats-overview-grid">
+    <!-- Currency Pipe -->
+    <div class="stat-metric-card glass-card" appHoverElevate>
+      <span class="metric-title">Sprint Budget Allocation (CurrencyPipe)</span>
+      <div class="metric-number" style="color: var(--color-success);">
+        {{ estimatedBudget | currency:'USD':'symbol':'1.0-0' }}
+      </div>
+      <span class="metric-caption">Based on $95/hr blended engineering rate</span>
+    </div>
+
+    <!-- Percent Pipe -->
+    <div class="stat-metric-card glass-card" appHoverElevate>
+      <span class="metric-title">Sprint Velocity Ratio (PercentPipe)</span>
+      <div class="metric-number" style="color: var(--color-info);">
+        {{ (metrics.completionRate / 100) | percent:'1.1-1' }}
+      </div>
+      <span class="metric-caption">Stories completed vs commitments</span>
+    </div>
+
+    <!-- Decimal Pipe -->
+    <div class="stat-metric-card glass-card" appHoverElevate>
+      <span class="metric-title">Average Task Effort (DecimalPipe)</span>
+      <div class="metric-number" style="color: var(--color-primary-light);">
+        {{ averageHoursPerTask | number:'1.1-2' }}h
+      </div>
+      <span class="metric-caption">Calculated across {{ metrics.totalTasks }} total tasks</span>
+    </div>
+
+    <!-- Date Pipe -->
+    <div class="stat-metric-card glass-card" appHoverElevate>
+      <span class="metric-title">Sprint Finale Milestone (DatePipe)</span>
+      <div class="metric-number" style="font-size: 1.35rem; color: var(--color-warning);">
+        {{ sprintEndDate | date:'mediumDate' }}
+      </div>
+      <span class="metric-caption">{{ sprintEndDate | date:'EEEE, MMM d, y' }}</span>
+    </div>
+  </div>
+
+  <!-- Analytics Grid 2: Functional Allocation & Assignee Workload -->
+  <div class="analytics-grid-2">
+    <!-- Functional Domain Allocation -->
+    <div class="table-card glass-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 1rem;">Domain Hours Allocation (UpperCasePipe)</h3>
+        <span class="badge badge-medium">{{ metrics.totalEstimatedHours }} Total Hours</span>
+      </div>
+
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Task Count</th>
+            <th>Allocated Hours</th>
+            <th>Budget Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of categoryBreakdown; track row.category) {
+            <tr>
+              <td>
+                <!-- UpperCase Pipe demonstration -->
+                <strong style="color: var(--text-main);">{{ row.category | uppercase }}</strong>
+              </td>
+              <td>{{ row.taskCount }}</td>
+              <td>{{ row.hours }} hrs</td>
+              <td style="color: var(--color-success); font-weight: 600;">
+                {{ (row.hours * 95) | currency:'USD':'symbol':'1.0-0' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Assignee Resource Loading Table -->
+    <div class="table-card glass-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 1rem;">Resource Loading & Deliveries</h3>
+        <span class="badge badge-low">{{ teamMembers.length }} Active Staff</span>
+      </div>
+
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Engineer</th>
+            <th>Role</th>
+            <th>Active Stories</th>
+            <th>Resolved Stories</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (member of teamMembers; track member.id) {
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <img [src]="member.avatar" [alt]="member.name" style="width: 24px; height: 24px; border-radius: 50%;">
+                  <span style="font-weight: 600;">{{ member.name }}</span>
+                </div>
+              </td>
+              <td style="font-size: 0.8rem; color: var(--text-muted);">{{ member.role }}</td>
+              <td>
+                <span class="badge badge-medium">{{ member.activeTasksCount }}</span>
+              </td>
+              <td>
+                <span class="badge badge-low">{{ member.completedTasksCount }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
