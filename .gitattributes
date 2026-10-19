@@ -1,0 +1,6 @@
+# Mark submission and report documentation HTML/MD files as documentation so GitHub counts pure application code
+DESIGN_AND_IMPLEMENT_USER_INTERFACE.html linguist-documentation=true
+IMPLEMENT_ANGULAR_COMPONENTS.html linguist-documentation=true
+USE_ANGULAR_DATABINDING_AND_DIRECTIVES.html linguist-documentation=true
+submissions/** linguist-documentation=true
+public/*.html linguist-documentation=true
